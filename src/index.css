@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  --animate-shimmer: shimmer 1.5s infinite linear;
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}
+
+@media print {
+  /* Hide the top nav header when printing the report */
+  .fixed.top-6 {
+    display: none !important;
+  }
+  
+  /* Reset background colors and margins to render clean PDFs */
+  body, main, div {
+     background-color: white !important;
+     color: black !important;
+  }
+  
+  /* Remove dark overlays and shadows for ink saving */
+  * {
+     box-shadow: none !important;
+     backdrop-filter: none !important;
+  }
+
+  /* Make borders visible on white */
+  .border, .border-zinc-800, .border-zinc-800\/50 {
+    border-color: #e5e7eb !important;
+  }
+
+  /* Keep table texts legible */
+  td, th {
+     color: black !important;
+  }
+  
+  /* Hide UI elements unnecessary for reporting */
+  button, input, select {
+     display: none !important;
+  }
+
+  table {
+     border-collapse: collapse;
+     width: 100%;
+  }
+
+  th {
+     background-color: #f3f4f6 !important;
+  }
+}
+
