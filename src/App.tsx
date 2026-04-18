@@ -39,10 +39,15 @@ import {
   SlidersHorizontal,
   CloudLightning,
   Sparkles,
-  Brain
+  Brain,
+  Target
 } from 'lucide-react';
 
 import { motion } from 'motion/react';
+import { 
+  ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, 
+  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis 
+} from 'recharts';
 
 function JSONModal({ isOpen, onClose, data }: { isOpen: boolean, onClose: () => void, data: any }) {
   if (!isOpen) return null;
@@ -60,6 +65,149 @@ function JSONModal({ isOpen, onClose, data }: { isOpen: boolean, onClose: () => 
           <pre className="font-mono text-sm text-zinc-400 whitespace-pre-wrap leading-relaxed">
             {JSON.stringify(data, null, 2)}
           </pre>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TelemetryModal({ isOpen, onClose, metricId }: { isOpen: boolean, onClose: () => void, metricId: string | null }) {
+  if (!isOpen || !metricId) return null;
+
+  const dataset: Record<string, any> = {
+    scans: {
+      id: "SCANS",
+      title: "Active Sector Scans",
+      status: "LIVE",
+      statusColor: "text-emerald-400",
+      icon: Activity,
+      insight: "Continuous geostationary polling active across 12 sector grids. Current orbital focus on Southeast Asia and Amazon basin.",
+      action: "Mapping illegal logging operations and surface thermal spikes.",
+      params: [
+        { label: "Polling Rate", value: "450ms" },
+        { label: "Sector Grids", value: "12 / 12" },
+        { label: "Orbital Sync", value: "Nominal" },
+        { label: "Data Ingest", value: "2.4 GB/s" }
+      ],
+      aiDeduction: "No immediate retargeting recommended. Current sweep tracking aligns optimally with predictive deforestation risk models."
+    },
+    anomalies: {
+      id: "ANOMALIES",
+      title: "Anomalies Detected",
+      status: "ELEVATED",
+      statusColor: "text-amber-400",
+      icon: AlertTriangle,
+      insight: "3,492 deviations from baseline mean detected within the 7-day rolling window. 42% rise in unauthorized landfill mass mapping.",
+      action: "Cross-referencing thermal signatures with known industrial registries.",
+      params: [
+        { label: "Confidence Min", value: "85%" },
+        { label: "False Positives", value: "< 2.1%" },
+        { label: "Primary Type", value: "Thermal" },
+        { label: "Severity Index", value: "Critical" }
+      ],
+      aiDeduction: "Gemini Engine confirms high probability of unauthorized waste burning in Sector 7-G. Immediate human-in-loop verification advised."
+    },
+    load: {
+      id: "LOAD",
+      title: "System Compute Load",
+      status: "STABLE",
+      statusColor: "text-blue-400",
+      icon: Server,
+      insight: "Edge function compute nodes operating well within nominal thresholds. Deno V8 isolates allocated: 128 of 500 limits.",
+      action: "Dynamically scaling tensor ingestion based on geographic tile density.",
+      params: [
+        { label: "CPU Headroom", value: "51.8%" },
+        { label: "Memory Usage", value: "840 MB" },
+        { label: "V8 Isolates", value: "128" },
+        { label: "Latency", value: "12ms" }
+      ],
+      aiDeduction: "Infrastructure health optimal. Auto-scaling rules currently dormant pending 80% sustained threshold."
+    }
+  };
+
+  const data = dataset[metricId];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/90 backdrop-blur-[8px] animate-in fade-in duration-300" onClick={onClose}>
+      <div 
+        onClick={(e) => e.stopPropagation()} 
+        className="bg-[#050505] border border-zinc-800 rounded-xl w-full max-w-3xl shadow-[0_0_80px_rgba(0,0,0,0.8)] overflow-hidden relative"
+      >
+        {/* High-tech targeting corners */}
+        <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-zinc-600 z-10 opacity-50 m-2"></div>
+        <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-zinc-600 z-10 opacity-50 m-2"></div>
+        <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-zinc-600 z-10 opacity-50 m-2"></div>
+        <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-zinc-600 z-10 opacity-50 m-2"></div>
+
+        <div className="flex justify-between items-center p-4 border-b border-zinc-800/80 bg-zinc-900/60">
+          <h3 className="font-mono text-xs text-zinc-400 flex items-center gap-3 uppercase tracking-widest">
+            <span className={`flex items-center justify-center w-5 h-5 rounded ${data.statusColor.replace('text-', 'bg-').replace('400', '500/20')} border ${data.statusColor.replace('text-', 'border-').replace('400', '500/40')}`}>
+              <data.icon className={`h-3 w-3 ${data.statusColor}`} />
+            </span>
+            &gt; SYS_QUERY: {data.id}_ANALYSIS
+          </h3>
+          <button onClick={onClose} className="text-zinc-500 hover:text-white transition-colors focus:outline-none"><X className="h-5 w-5" /></button>
+        </div>
+
+        <div className="p-8 pb-10 flex flex-col md:flex-row gap-8 relative overflow-hidden">
+           {/* Animated Background Line */}
+           <motion.div 
+             animate={{ left: ['-100%', '200%'] }} 
+             transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+             className="absolute top-[40%] bottom-0 w-[200px] h-full skew-x-[-45deg] bg-gradient-to-r from-transparent via-white/[0.03] to-transparent pointer-events-none -z-10" 
+           />
+
+           {/* Left Block - Abstract Visuals */}
+           <div className="w-full md:w-1/3 border-r border-zinc-800/60 pr-8 flex flex-col justify-start">
+             <div className="text-zinc-500 font-mono text-[10px] uppercase tracking-widest mb-4 flex justify-between w-full">
+               <span>STATUS</span>
+               <span className={`${data.statusColor} font-bold animate-pulse inline-flex items-center gap-1.5`}>
+                  <div className={`w-1.5 h-1.5 rounded-full ${data.statusColor.replace('text-', 'bg-')}`}></div> {data.status}
+               </span>
+             </div>
+             <h2 className="text-3xl font-bold tracking-tighter text-white mb-2 leading-none">{data.title}</h2>
+             
+             {/* Simulated Sub-metric Bar */}
+             <div className="mt-8 space-y-4">
+                {data.params.map((param: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center border-b border-zinc-800/50 pb-2">
+                     <span className="text-[10px] font-mono text-zinc-500 uppercase">{param.label}</span>
+                     <span className="text-xs font-mono text-zinc-200 font-bold">{param.value}</span>
+                  </div>
+                ))}
+             </div>
+           </div>
+
+           {/* Right Block - Deductions */}
+           <div className="w-full md:w-2/3 flex flex-col gap-6">
+              <div>
+                 <h4 className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                   <Info className="h-3 w-3" /> Raw Telemetry
+                 </h4>
+                 <p className="text-sm text-zinc-300 leading-relaxed font-mono font-medium tracking-wide">
+                   {data.insight}
+                 </p>
+              </div>
+
+              <div>
+                 <h4 className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                   <Crosshair className="h-3 w-3" /> Hardware Action
+                 </h4>
+                 <p className="text-sm text-zinc-400 leading-relaxed font-mono">
+                   {data.action}
+                 </p>
+              </div>
+
+              <div className="mt-4 p-4 border border-emerald-500/30 bg-emerald-500/5 rounded-lg shadow-inner relative overflow-hidden">
+                 <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500/50"></div>
+                 <h4 className="text-[11px] font-bold text-emerald-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                   <Brain className="h-3 w-3" /> Gemini AI Deduction
+                 </h4>
+                 <p className="text-[13px] text-emerald-100/70 leading-relaxed font-mono tracking-wide text-justify">
+                   {data.aiDeduction}
+                 </p>
+              </div>
+           </div>
         </div>
       </div>
     </div>
@@ -174,6 +322,7 @@ function NavHeader({ activeTab, setActiveTab }: { activeTab: Tab, setActiveTab: 
 
 function OverviewTab() {
   const [spectralMode, setSpectralMode] = useState<'NDVI' | 'AOD' | 'CH4'>('NDVI');
+  const [activeMetricModal, setActiveMetricModal] = useState<string | null>(null);
   
   const spectralConfig = {
     'NDVI': {
@@ -242,9 +391,114 @@ function OverviewTab() {
       </motion.header>
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <MetricCard title="Active Scans" value="12" icon={Activity} trend="+2 from last hr" sparkline={[30, 45, 25, 60, 40, 80, 50, 90]} />
-        <MetricCard title="Anomalies Detected" value="3,492" icon={AlertTriangle} trend="7-day cumulative" color="amber" sparkline={[10, 20, 15, 40, 30, 60, 55, 75]} />
-        <MetricCard title="System Load" value="48.2%" icon={Server} trend="Edge Fn Computing" color="blue" sparkline={[40, 42, 41, 48, 47, 46, 49, 48]} />
+        <MetricCard onClick={() => setActiveMetricModal('scans')} title="Active Scans" value="12" icon={Activity} trend="+2 from last hr" sparkline={[30, 45, 25, 60, 40, 80, 50, 90]} />
+        <MetricCard onClick={() => setActiveMetricModal('anomalies')} title="Anomalies Detected" value="3,492" icon={AlertTriangle} trend="7-day cumulative" color="amber" sparkline={[10, 20, 15, 40, 30, 60, 55, 75]} />
+        <MetricCard onClick={() => setActiveMetricModal('load')} title="System Load" value="48.2%" icon={Server} trend="Edge Fn Computing" color="blue" sparkline={[40, 42, 41, 48, 47, 46, 49, 48]} />
+      </motion.div>
+
+      {/* Advanced Telemetry Analytics */}
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative">
+        {/* Temporal Area Graph */}
+        <div className="lg:col-span-2 bg-[#0a0a0a] border border-zinc-800/80 p-5 rounded-xl shadow-base relative overflow-hidden flex flex-col group hover:border-zinc-700 transition-colors duration-300">
+           <div className="flex items-center justify-between mb-6 relative z-10 w-full pr-2">
+              <div className="flex items-center gap-2">
+                 <Activity className="h-4 w-4 text-emerald-400 group-hover:text-emerald-300 transition-colors" />
+                 <h3 className="text-zinc-200 font-bold uppercase tracking-widest text-[11px] font-mono">Temporal Anomaly Frequency</h3>
+              </div>
+              <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest border border-zinc-800 bg-zinc-900/50 px-2 py-1 rounded">24_HR_ROLLING</span>
+           </div>
+           
+           <div className="flex-1 min-h-[220px] w-full relative z-10" style={{ marginLeft: '-15px', paddingRight: '15px' }}>
+              <ResponsiveContainer width="100%" height="100%">
+                 <AreaChart data={[
+                    { time: '00:00', urban: 15, forest: 5, water: 2 },
+                    { time: '04:00', urban: 11, forest: 6, water: 4 },
+                    { time: '08:00', urban: 48, forest: 15, water: 2 },
+                    { time: '12:00', urban: 82, forest: 22, water: 5 },
+                    { time: '16:00', urban: 55, forest: 18, water: 3 },
+                    { time: '20:00', urban: 30, forest: 9, water: 1 },
+                    { time: '24:00', urban: 18, forest: 6, water: 2 },
+                 ]} margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
+                    <defs>
+                       <linearGradient id="colorUrban" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                       </linearGradient>
+                       <linearGradient id="colorForest" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                       </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                    <XAxis dataKey="time" stroke="#3f3f46" tick={{fill: '#71717a', fontSize: 10, fontFamily: 'monospace'}} axisLine={false} tickLine={false} />
+                    <YAxis stroke="#3f3f46" tick={{fill: '#71717a', fontSize: 10, fontFamily: 'monospace'}} axisLine={false} tickLine={false} width={40} />
+                    <RechartsTooltip 
+                       content={({ active, payload, label }) => {
+                         if (active && payload && payload.length) {
+                           return (
+                             <div className="bg-zinc-950/90 border border-zinc-800 p-3 rounded shadow-xl backdrop-blur-md">
+                               <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-wider mb-2 border-b border-zinc-800 pb-1">{label} // UTC</p>
+                               {payload.map((entry: any, index: number) => (
+                                 <div key={index} className="flex items-center justify-between gap-4 font-mono text-[11px] mb-1 last:mb-0">
+                                   <div className="flex items-center gap-1.5">
+                                      <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: entry.color }}></span>
+                                      <span className="text-zinc-300 uppercase">{entry.name}</span>
+                                   </div>
+                                   <span className="font-bold text-zinc-100">{entry.value}</span>
+                                 </div>
+                               ))}
+                             </div>
+                           );
+                         }
+                         return null;
+                       }}
+                    />
+                    <Area type="monotone" dataKey="urban" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorUrban)" />
+                    <Area type="monotone" dataKey="forest" stroke="#f59e0b" strokeWidth={2} fillOpacity={1} fill="url(#colorForest)" />
+                 </AreaChart>
+              </ResponsiveContainer>
+           </div>
+        </div>
+
+        {/* Polar Radar Graph */}
+        <div className="bg-[#0a0a0a] border border-zinc-800/80 p-5 rounded-xl shadow-base relative overflow-hidden flex flex-col items-center group hover:border-zinc-700 transition-colors duration-300">
+           <div className="flex items-center justify-between mb-2 w-full relative z-10">
+              <div className="flex items-center gap-2">
+                 <Target className="h-4 w-4 text-[#a78bfa] group-hover:text-[#c4b5fd] transition-colors" />
+                 <h3 className="text-zinc-200 font-bold uppercase tracking-widest text-[11px] font-mono">Signature Vectors</h3>
+              </div>
+           </div>
+           
+           <div className="flex-1 w-full relative z-10 -ml-2 -mt-4">
+              <ResponsiveContainer width="100%" height={240}>
+                 <RadarChart cx="50%" cy="50%" outerRadius="65%" data={[
+                    { subject: 'NDVI', A: 120, B: 110, fullMark: 150 },
+                    { subject: 'Thermal', A: 98, B: 130, fullMark: 150 },
+                    { subject: 'CH4', A: 86, B: 130, fullMark: 150 },
+                    { subject: 'Albedo', A: 99, B: 100, fullMark: 150 },
+                    { subject: 'Aerosol', A: 85, B: 90, fullMark: 150 },
+                 ]}>
+                    <PolarGrid stroke="#27272a" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: '#a1a1aa', fontSize: 9, fontFamily: 'monospace' }} />
+                    <Radar name="Scanned Raster" dataKey="A" stroke="#a78bfa" strokeWidth={1} fill="#a78bfa" fillOpacity={0.2} />
+                    <Radar name="Baseline Mean" dataKey="B" stroke="#3f3f46" strokeWidth={1} fill="#3f3f46" fillOpacity={0.1} />
+                    <RechartsTooltip 
+                       content={({ active, payload, label }) => {
+                         if (active && payload && payload.length) {
+                           return (
+                             <div className="bg-zinc-950/90 border border-zinc-800 p-2 rounded shadow-xl backdrop-blur-md">
+                               <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-wider mb-1">{label} INDEX</p>
+                               <div className="font-mono text-[11px] text-[#a78bfa] font-bold">VAL: {payload[0].value}</div>
+                             </div>
+                           );
+                         }
+                         return null;
+                       }}
+                    />
+                 </RadarChart>
+              </ResponsiveContainer>
+           </div>
+        </div>
       </motion.div>
 
       <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-4 relative">
@@ -328,11 +582,17 @@ function OverviewTab() {
           </div>
         </div>
       </motion.div>
+
+      <TelemetryModal 
+        isOpen={!!activeMetricModal} 
+        metricId={activeMetricModal} 
+        onClose={() => setActiveMetricModal(null)} 
+      />
     </motion.div>
   );
 }
 
-function MetricCard({ title, value, icon: Icon, trend, color = "emerald", sparkline }: { title: string, value: string, icon: any, trend: string, color?: string, sparkline?: number[] }) {
+function MetricCard({ title, value, icon: Icon, trend, color = "emerald", sparkline, onClick }: { title: string, value: string, icon: any, trend: string, color?: string, sparkline?: number[], onClick?: () => void }) {
   const colorMap: Record<string, string> = {
     emerald: "text-emerald-400 border-emerald-500/30",
     amber: "text-amber-400 border-amber-500/30",
@@ -346,7 +606,7 @@ function MetricCard({ title, value, icon: Icon, trend, color = "emerald", sparkl
   };
 
   return (
-    <div className={`bg-zinc-900 border border-zinc-800 border-t-2 ${colorMap[color].split(' ')[1]} rounded-lg p-6 hover:bg-zinc-800/80 transition-all cursor-pointer group hover:-translate-y-1 hover:shadow-2xl overflow-hidden relative`}>
+    <div onClick={onClick} className={`bg-zinc-900 border border-zinc-800 border-t-2 ${colorMap[color].split(' ')[1]} rounded-lg p-6 hover:bg-zinc-800/80 transition-all cursor-pointer group hover:-translate-y-1 hover:shadow-2xl overflow-hidden relative`}>
       <div className="flex justify-between items-start relative z-10">
         <div>
           <p className="text-xs font-medium text-zinc-400 tracking-wider uppercase">{title}</p>
@@ -838,11 +1098,11 @@ function ArchitectureTab() {
   const [activeNode, setActiveNode] = useState<string | null>(null);
 
   const steps = [
-    { id: 'trigger', icon: Activity, label: "Trigger Job", desc: "cron_or_client", fullDesc: "Initiates the pipeline either via scheduled cron jobs for continuous background monitoring, or localized client requests via the React interface." },
-    { id: 'nasa', icon: Globe, label: "NASA GIBS API", desc: "wmts_ingestion", fullDesc: "Fetches multi-spectral satellite imagery using Web Map Tile Service (WMTS). Automatically handles cloud-cover fallbacks and coordinate bounds." },
-    { id: 'edge', icon: Server, label: "Pre-processing", desc: "deno_runtime", fullDesc: "Serverless Deno execution environment. Converts raw coordinates to standardized tile formats, securely manages API keys, and orchestrates the inference payload." },
-    { id: 'ai', icon: Brain, label: "AI Inference", desc: "gemini_1_5_pro", highlight: true, fullDesc: "The core engine. Utilizes Gemini 1.5 Pro's massive context window to perform precise Image-to-Text Analysis for zero-shot anomaly detection on the raster." },
-    { id: 'db', icon: Database, label: "Data Persistence", desc: "supabase_pg", fullDesc: "Stores metadata, locations, alerts, and classifications. Employs Row Level Security (RLS) and JWT auth to securely separate client and admin concerns." }
+    { id: 'trigger', icon: Activity, label: "Trigger Job", desc: "cron_or_client", color: 'cyan', fullDesc: "Initiates the pipeline either via scheduled cron jobs for continuous background monitoring, or localized client requests via the React interface." },
+    { id: 'nasa', icon: Globe, label: "NASA GIBS API", desc: "wmts_ingestion", color: 'indigo', fullDesc: "Fetches multi-spectral satellite imagery using Web Map Tile Service (WMTS). Automatically handles cloud-cover fallbacks and coordinate bounds." },
+    { id: 'edge', icon: Server, label: "Pre-processing", desc: "deno_runtime", color: 'amber', fullDesc: "Serverless Deno execution environment. Converts raw coordinates to standardized tile formats, securely manages API keys, and orchestrates the inference payload." },
+    { id: 'ai', icon: Brain, label: "AI Inference", desc: "gemini_1_5_pro", color: 'emerald', fullDesc: "The core engine. Utilizes Gemini 1.5 Pro's massive context window to perform precise Image-to-Text Analysis for zero-shot anomaly detection on the raster." },
+    { id: 'db', icon: Database, label: "Data Persistence", desc: "supabase_pg", color: 'purple', fullDesc: "Stores metadata, locations, alerts, and classifications. Employs Row Level Security (RLS) and JWT auth to securely separate client and admin concerns." }
   ];
 
   const getSpecs = (id: string) => {
@@ -920,21 +1180,25 @@ function ArchitectureTab() {
       </header>
 
       <div className="bg-[#0a0a0a] border border-zinc-800/80 rounded-xl p-4 sm:p-8 md:p-10 relative overflow-hidden shadow-base">
-        {/* Background grid */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[length:20px_20px] pointer-events-none"></div>
+        {/* Colorful Background grid */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[length:20px_20px] pointer-events-none z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/[0.02] via-emerald-500/[0.02] to-purple-500/[0.02] pointer-events-none z-0"></div>
 
         {/* Horizontal scroll container for the diagram to survive 5 steps */}
-        <div className="w-full overflow-x-auto pb-8 custom-scrollbar">
+        <div className="w-full overflow-x-auto pb-8 custom-scrollbar relative z-10">
           <div className="flex items-center min-w-[1050px] justify-between mx-auto gap-4 relative z-10 w-full mb-4 px-2 pt-2">
             
+            {/* Ambient Background Core Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[300px] bg-gradient-to-r from-cyan-500/5 via-indigo-500/5 to-purple-500/5 blur-[120px] rounded-[100%] pointer-events-none -z-20"></div>
+
             {/* Connector Line */}
-            <div className="absolute top-[43%] left-12 right-12 h-[1px] bg-zinc-800/80 -z-10">
+            <div className="absolute top-[43%] left-12 right-12 h-[2px] bg-gradient-to-r from-cyan-500/20 via-emerald-500/20 to-purple-500/20 -z-10 shadow-[0_0_10px_rgba(255,255,255,0.05)]">
               {/* Animated Data Packets / Shimmer */}
-              <div className="absolute top-0 left-0 w-full h-[1px] overflow-hidden">
-                 <div className="h-[1px] w-1/4 bg-gradient-to-r from-transparent via-emerald-500/80 to-transparent animate-[shimmer_2s_infinite_linear]"></div>
+              <div className="absolute top-0 left-0 w-full h-full overflow-hidden">
+                 <div className="h-full w-1/4 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_2s_infinite_linear] shadow-[0_0_8px_white]"></div>
               </div>
-              <div className="absolute top-0 left-0 w-full h-[1px] overflow-hidden rotate-180">
-                 <div className="h-[1px] w-1/5 bg-gradient-to-r from-transparent via-zinc-500/50 to-transparent animate-[shimmer_3s_infinite_linear_reverse]"></div>
+              <div className="absolute top-0 left-0 w-full h-full overflow-hidden rotate-180">
+                 <div className="h-full w-1/5 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-[shimmer_3s_infinite_linear_reverse]"></div>
               </div>
             </div>
 
@@ -944,7 +1208,7 @@ function ArchitectureTab() {
                   icon={step.icon} 
                   label={step.label} 
                   desc={step.desc} 
-                  highlight={step.highlight} 
+                  color={step.color}
                   active={activeNode === step.id}
                   onClick={() => setActiveNode(activeNode === step.id ? null : step.id)}
                 />
@@ -1083,43 +1347,65 @@ function ArchitectureTab() {
   );
 }
 
-function ArchNode({ icon: Icon, label, desc, highlight, active, onClick }: { icon: React.ElementType, label: string, desc: string, highlight?: boolean, active?: boolean, onClick?: () => void }) {
+function ArchNode({ icon: Icon, label, desc, active, onClick, color = "emerald" }: { icon: React.ElementType, label: string, desc: string, active?: boolean, onClick?: () => void, color?: string }) {
+  const cMap: Record<string, any> = {
+    cyan: { 
+       text: "text-cyan-400", borderHover: "group-hover:border-cyan-500/50", glow: "shadow-[0_0_30px_rgba(34,211,238,0.15)]", pulse: "bg-cyan-500", borderActive: "border-cyan-500/60", ring: "ring-cyan-500/20", gradientHover: "to-cyan-500/5", gradientActive: "to-cyan-500/10", iconBgActive: "bg-cyan-500/20", iconBgHover: "group-hover:bg-cyan-500/10", iconBorderPulse: "border-cyan-500/40", statusText: "text-cyan-500/90", cornerBorder: "border-cyan-500"
+    },
+    indigo: { 
+       text: "text-indigo-400", borderHover: "group-hover:border-indigo-500/50", glow: "shadow-[0_0_30px_rgba(99,102,241,0.15)]", pulse: "bg-indigo-500", borderActive: "border-indigo-500/60", ring: "ring-indigo-500/20", gradientHover: "to-indigo-500/5", gradientActive: "to-indigo-500/10", iconBgActive: "bg-indigo-500/20", iconBgHover: "group-hover:bg-indigo-500/10", iconBorderPulse: "border-indigo-500/40", statusText: "text-indigo-500/90", cornerBorder: "border-indigo-500"
+    },
+    amber: { 
+       text: "text-amber-400", borderHover: "group-hover:border-amber-500/50", glow: "shadow-[0_0_30px_rgba(245,158,11,0.15)]", pulse: "bg-amber-500", borderActive: "border-amber-500/60", ring: "ring-amber-500/20", gradientHover: "to-amber-500/5", gradientActive: "to-amber-500/10", iconBgActive: "bg-amber-500/20", iconBgHover: "group-hover:bg-amber-500/10", iconBorderPulse: "border-amber-500/40", statusText: "text-amber-500/90", cornerBorder: "border-amber-500"
+    },
+    emerald: { 
+       text: "text-emerald-400", borderHover: "group-hover:border-emerald-500/60", glow: "shadow-[0_0_40px_rgba(16,185,129,0.2)]", pulse: "bg-emerald-500", borderActive: "border-emerald-500/60", ring: "ring-emerald-500/20", gradientHover: "to-emerald-500/5", gradientActive: "to-emerald-500/10", iconBgActive: "bg-emerald-500/20", iconBgHover: "group-hover:bg-emerald-500/10", iconBorderPulse: "border-emerald-500/40", statusText: "text-emerald-500/90", cornerBorder: "border-emerald-500"
+    },
+    purple: { 
+       text: "text-purple-400", borderHover: "group-hover:border-purple-500/50", glow: "shadow-[0_0_30px_rgba(168,85,247,0.15)]", pulse: "bg-purple-500", borderActive: "border-purple-500/60", ring: "ring-purple-500/20", gradientHover: "to-purple-500/5", gradientActive: "to-purple-500/10", iconBgActive: "bg-purple-500/20", iconBgHover: "group-hover:bg-purple-500/10", iconBorderPulse: "border-purple-500/40", statusText: "text-purple-500/90", cornerBorder: "border-purple-500"
+    },
+  };
+
+  const theme = cMap[color] || cMap['emerald'];
+
   return (
     <div 
       onClick={onClick}
-      className={`flex-shrink-0 group relative flex flex-col items-center justify-center p-6 rounded-lg border w-48 text-center cursor-pointer transition-all duration-300
-        ${active ? 'bg-[#0f0f0f] border-zinc-500 scale-105 z-10 shadow-[0_10px_40px_rgba(0,0,0,0.5)]' : 'bg-black/60 border-zinc-800/80 hover:bg-zinc-900/80 hover:border-zinc-600'}
-        ${highlight && active ? 'border-emerald-500/60 bg-emerald-950/20 shadow-[0_0_30px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/20' : ''}
-        ${highlight && !active ? 'border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.05)] hover:border-emerald-500/60 hover:bg-emerald-950/10' : ''}
+      className={`flex-shrink-0 group relative flex flex-col items-center justify-center p-6 rounded-lg border w-48 text-center cursor-pointer transition-all duration-500 overflow-hidden
+        ${active ? `bg-[#0f0f0f] ${theme.borderActive} scale-105 z-10 ${theme.glow} ring-1 ${theme.ring}` : `bg-black/60 border-zinc-800/80 hover:bg-zinc-900/80 hover:-translate-y-1 ${theme.borderHover}`}
       `}
     >
-      {/* High-Tech Corner UI Brackets */}
-      <div className={`absolute top-0 left-0 w-2 h-2 border-t border-l opacity-0 group-hover:opacity-100 transition-opacity ${highlight ? 'border-emerald-500' : 'border-zinc-400'}`}></div>
-      <div className={`absolute top-0 right-0 w-2 h-2 border-t border-r opacity-0 group-hover:opacity-100 transition-opacity ${highlight ? 'border-emerald-500' : 'border-zinc-400'}`}></div>
-      <div className={`absolute bottom-0 left-0 w-2 h-2 border-b border-l opacity-0 group-hover:opacity-100 transition-opacity ${highlight ? 'border-emerald-500' : 'border-zinc-400'}`}></div>
-      <div className={`absolute bottom-0 right-0 w-2 h-2 border-b border-r opacity-0 group-hover:opacity-100 transition-opacity ${highlight ? 'border-emerald-500' : 'border-zinc-400'}`}></div>
+      {/* Background Gradient on hover */}
+      <div className={`absolute inset-0 bg-gradient-to-br from-transparent ${theme.gradientHover} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
+
+      {/* High-Tech Corner UI Brackets - Now using theme colors dynamically when active or hovered */}
+      <div className={`absolute top-0 left-0 w-2 h-2 border-t border-l opacity-0 group-hover:opacity-100 transition-opacity ${theme.cornerBorder}`}></div>
+      <div className={`absolute top-0 right-0 w-2 h-2 border-t border-r opacity-0 group-hover:opacity-100 transition-opacity ${theme.cornerBorder}`}></div>
+      <div className={`absolute bottom-0 left-0 w-2 h-2 border-b border-l opacity-0 group-hover:opacity-100 transition-opacity ${theme.cornerBorder}`}></div>
+      <div className={`absolute bottom-0 right-0 w-2 h-2 border-b border-r opacity-0 group-hover:opacity-100 transition-opacity ${theme.cornerBorder}`}></div>
 
       {active && (
-        <div className="absolute inset-0 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none rounded-lg" />
+        <div className={`absolute inset-0 bg-gradient-to-b from-white/[0.03] ${theme.gradientActive} pointer-events-none rounded-lg`} />
       )}
 
-      <div className={`relative p-3.5 rounded-full mb-4 transition-colors duration-300 ${highlight ? 'bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20' : 'bg-zinc-800/40 text-zinc-400 group-hover:text-zinc-200 group-hover:bg-zinc-700/80'}`}>
-         {highlight && (
-           <div className="absolute inset-0 border border-emerald-500/30 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]"></div>
+      {/* Dynamic Animated Node Icon Background */}
+      <div className={`relative p-3.5 rounded-full mb-4 transition-all duration-300 ${active ? `${theme.iconBgActive} ${theme.text} scale-110 shadow-[0_0_15px_currentColor]` : `bg-zinc-800/60 text-zinc-400 group-hover:${theme.text} outline-none ${theme.iconBgHover} group-hover:scale-110 group-hover:shadow-[0_0_10px_currentColor]`}`}>
+         {active && (
+           <div className={`absolute inset-0 border ${theme.iconBorderPulse} rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite]`}></div>
          )}
-         <Icon className="h-6 w-6 relative z-10" />
+         <Icon className="h-6 w-6 relative z-10 transition-transform duration-500" />
       </div>
       
-      <h4 className={`font-bold tracking-wider text-[12px] uppercase transition-colors ${active ? (highlight ? 'text-emerald-400' : 'text-white') : 'text-zinc-300'}`}>
+      <h4 className={`font-bold tracking-wider text-[12px] uppercase transition-colors duration-300 ${active ? theme.text : 'text-zinc-300 group-hover:text-white'}`}>
          {label}
       </h4>
-      <p className="text-[10px] text-zinc-500 font-mono mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity uppercase tracking-wider">{desc}</p>
+      <p className="text-[10px] text-zinc-500 font-mono mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity uppercase tracking-wider relative z-10">{desc}</p>
       
-      {/* Simulation status indicator footer */}
-      <div className={`mt-5 pt-3 border-t border-zinc-800/60 w-full flex justify-between px-3 text-[8px] font-mono transition-all duration-300 ${active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'}`}>
+      {/* Simulation status indicator footer with changing color scheme */}
+      <div className={`mt-5 pt-3 border-t border-zinc-800/60 w-full flex justify-between px-3 text-[8px] font-mono transition-all duration-500 relative z-10 ${active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'}`}>
          <span className="text-zinc-500 font-semibold tracking-widest">STATE</span>
-         <span className="text-emerald-500/90 font-bold flex items-center gap-1">
-            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span> OK
+         <span className={`${theme.statusText} font-bold flex items-center gap-1`}>
+            <span className={`w-1.5 h-1.5 ${theme.pulse} rounded-full animate-pulse shadow-[0_0_5px_currentColor]`}></span> OK
          </span>
       </div>
     </div>
